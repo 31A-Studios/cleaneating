@@ -257,7 +257,7 @@ input[type=range]::-moz-range-thumb{width:26px;height:26px;border-radius:50%;bac
       <div class="eyebrow">Recomp Protocol</div>
       <div class="app-title">Clean <span>Eating</span></div>
     </div>
-    <div class="tracker-card" id="trackerCard"><div style="position:absolute;top:-1px;left:-1px;right:-1px;background:var(--border);border-radius:var(--r) var(--r) 0 0;padding:3px 8px;font-family:var(--font-mono);font-size:9px;color:var(--muted);letter-spacing:1px;text-align:center" id="versionBadge">v1.6</div>
+    <div class="tracker-card" id="trackerCard"><div style="position:absolute;top:-1px;left:-1px;right:-1px;background:var(--border);border-radius:var(--r) var(--r) 0 0;padding:3px 8px;font-family:var(--font-mono);font-size:9px;color:var(--muted);letter-spacing:1px;text-align:center" id="versionBadge">v1.7</div>
       <div class="tracker-week-num" id="trackerWeekNum">—</div>
       <div class="tracker-label">Programm-Woche</div>
     </div>
@@ -409,7 +409,7 @@ input[type=range]::-moz-range-thumb{width:26px;height:26px;border-radius:50%;bac
 
 <script>
 // ══════════════════════════════════════════════════
-const VERSION = "v1.6";
+const VERSION = "v1.7";
 // ══════════════════════════════════════════════════
 // MEAL DATABASE
 // ══════════════════════════════════════════════════
@@ -608,10 +608,17 @@ function calcTracker() {
   start.setHours(0,0,0,0); now.setHours(0,0,0,0);
   const diffDays = Math.floor((now - start) / 86400000);
   if (diffDays < 0) return null;
-  const programWeek = Math.floor(diffDays / 7) + 1;
-  const cycleDay    = diffDays % 14; // 0–13
+
+  // startDayOfWeek: 0=Mo,1=Di,...,6=So (JS: Sun=0, so we convert)
+  const jsDay = start.getDay(); // 0=Sun,1=Mon,...,6=Sat
+  const startDayOfWeek = jsDay === 0 ? 6 : jsDay - 1; // convert to Mon=0
+
+  // Position in 14-day cycle = startDayOfWeek offset + days elapsed
+  const cycleDay    = (startDayOfWeek + diffDays) % 14;
   const cycleWeek   = cycleDay < 7 ? 1 : 2;
-  const dayInCycle  = cycleDay % 7;  // 0–6
+  const dayInCycle  = cycleDay % 7;
+  const programWeek = Math.floor((startDayOfWeek + diffDays) / 7) + 1;
+
   return { programWeek, cycleWeek, dayInCycle, diffDays, dayName: DNAMES[dayInCycle] };
 }
 
