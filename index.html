@@ -850,6 +850,7 @@ function swapMeal(newId) {
   closeModal();
   renderDayDetail();
   renderWeekGrid();
+  autoSave();
   toast('Gericht getauscht ✓');
 }
 
@@ -936,11 +937,24 @@ function renderShoppingList() {
 function toggleShop(w,name){
   S.shopChecked[w][name]=!S.shopChecked[w][name];
   renderShoppingList();
+  autoSave();
 }
 
 // ══════════════════════════════════════════════════
 // SAVE / LOAD / RESET
 // ══════════════════════════════════════════════════
+
+
+// ── AUTO-SAVE TO LOCALSTORAGE ──
+function autoSave(){
+  try{
+    localStorage.setItem('cep_plan', JSON.stringify(S.plan));
+    localStorage.setItem('cep_checked', JSON.stringify(S.shopChecked));
+    localStorage.setItem('cep_startDate', S.startDate||'');
+    localStorage.setItem('cep_kcal', S.kcalTarget);
+    localStorage.setItem('cep_cheatdays', JSON.stringify(S.cheatdays));
+  }catch(e){}
+}
 
 // ── CHEATDAY KEY ──
 function cdKey(w,d){ return `w${w}d${d}`; }
@@ -952,6 +966,7 @@ function toggleCheatday(){
   updateCheatdayBtn();
   renderWeekGrid();
   updateSavings();
+  autoSave();
   toast(S.cheatdays[key] ? '🍕 Cheatday markiert' : 'Cheatday entfernt');
 }
 
@@ -1006,6 +1021,7 @@ function updateSavings(){
 function resetShopList(){
   S.shopChecked = {1:{},2:{}};
   renderShoppingList();
+  autoSave();
   toast('Einkaufsliste zurückgesetzt ✓');
 }
 
@@ -1045,6 +1061,7 @@ function updateKcalTarget(val) {
   const pct = (val-1800)/(3500-1800)*100;
   document.getElementById('kcalSlider').style.background =
     `linear-gradient(to right, var(--acc) ${pct}%, var(--border) ${pct}%)`;
+  autoSave();
 }
 
 
@@ -1097,6 +1114,7 @@ function resetPlan(){
     S.shopChecked = {1:{},2:{}};
     S.cheatdays = {};
     S.startDate = null;
+    localStorage.clear();
     S.kcalTarget = 2600;
     localStorage.clear();
     document.getElementById('kcalSlider').value = 2600;
@@ -1110,13 +1128,34 @@ function resetPlan(){
 function saveStartDate(){
   S.startDate=document.getElementById('startDateInput').value||null;
   updateTracker();
-  savePlan();
+  updateSavings();
+  autoSave();
+  toast('Startdatum gespeichert ✓');
 }
 
 // ══════════════════════════════════════════════════
 // INIT
 // ══════════════════════════════════════════════════
 window.addEventListener('load',()=>{
+  // Auto-load from localStorage
+  try{
+    const p  = localStorage.getItem('cep_plan');
+    const c  = localStorage.getItem('cep_checked');
+    const sd = localStorage.getItem('cep_startDate');
+    const kc = localStorage.getItem('cep_kcal');
+    const cd = localStorage.getItem('cep_cheatdays');
+    if(p)  S.plan        = JSON.parse(p);
+    if(c)  S.shopChecked = JSON.parse(c);
+    if(cd) S.cheatdays   = JSON.parse(cd);
+    if(sd && sd!==''){
+      S.startDate = sd;
+      document.getElementById('startDateInput').value = sd;
+    }
+    if(kc){
+      S.kcalTarget = parseInt(kc);
+      document.getElementById('kcalSlider').value = kc;
+    }
+  }catch(e){}
   updateKcalTarget(S.kcalTarget);
   renderWeekGrid();
   updateTracker();
