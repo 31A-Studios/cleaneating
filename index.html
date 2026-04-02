@@ -32,10 +32,10 @@ button{font-family:var(--font-body);cursor:pointer}
 .app-title span{color:var(--acc)}
 
 /* TRACKER CARD */
-.tracker-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:14px 16px;min-width:120px;text-align:right;flex-shrink:0}
-.tracker-week-num{font-size:44px;font-weight:900;letter-spacing:-2px;line-height:1;color:var(--acc)}
-.tracker-label{font-family:var(--font-mono);font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-top:2px}
-.tracker-sub{font-family:var(--font-mono);font-size:11px;color:var(--muted2);margin-top:8px;border-top:1px solid var(--border);padding-top:8px;line-height:1.4}
+.tracker-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:16px 18px;min-width:150px;text-align:right;flex-shrink:0}
+.tracker-week-num{font-size:56px;font-weight:900;letter-spacing:-3px;line-height:1;color:var(--acc)}
+.tracker-label{font-family:var(--font-mono);font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-top:4px}
+.tracker-sub{font-family:var(--font-mono);font-size:12px;color:var(--muted2);margin-top:10px;border-top:1px solid var(--border);padding-top:10px;line-height:1.5}
 
 .header-pills{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
 .pill{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;background:var(--card);border:1px solid var(--border);border-radius:20px;font-size:13px;color:var(--muted2)}
@@ -228,6 +228,21 @@ input[type=range]::-moz-range-thumb{width:26px;height:26px;border-radius:50%;bac
 .mtr-fill{height:100%;border-radius:3px;transition:width 0.3s ease}
 .mtr-val{font-family:var(--font-mono);font-size:12px;color:var(--muted2);min-width:65px;text-align:right}
 
+
+/* CHEATDAY */
+.day-row.cheatday{border-color:#f06040;border-width:1.5px}
+.cheatday-badge{display:inline-block;background:#f06040;color:#fff;font-size:10px;font-weight:700;padding:3px 8px;border-radius:6px;letter-spacing:.5px;margin-top:2px}
+.cheatday-btn{padding:8px 14px;border-radius:10px;border:1.5px solid var(--border2);background:var(--card2);color:var(--muted2);font-size:13px;font-weight:600;transition:all 0.15s;cursor:pointer}
+.cheatday-btn.active{background:#f06040;border-color:#f06040;color:#fff}
+
+/* SAVINGS CARD */
+.savings-card{margin:16px 20px 0;background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:18px;display:flex;flex-direction:column;gap:14px}
+.savings-row{display:flex;align-items:center;justify-content:space-between}
+.savings-label{font-family:var(--font-mono);font-size:12px;color:var(--muted2);text-transform:uppercase;letter-spacing:1px}
+.savings-val{font-size:22px;font-weight:800;letter-spacing:-.5px;color:var(--acc)}
+.savings-val.fat{color:var(--fat)}
+.savings-val.neutral{color:var(--muted2)}
+.savings-divider{height:1px;background:var(--border)}
 /* TOAST */
 .toast{position:fixed;bottom:100px;left:50%;transform:translateX(-50%) translateY(16px);background:var(--acc);color:#0f0f0f;font-size:14px;font-weight:600;padding:12px 22px;border-radius:24px;z-index:300;opacity:0;transition:all 0.22s;white-space:nowrap;pointer-events:none}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
@@ -270,6 +285,22 @@ input[type=range]::-moz-range-thumb{width:26px;height:26px;border-radius:50%;bac
     </div>
     <div class="today-cycle" id="todayCycle">—</div>
   </div>
+  <div id="savingsCard" class="savings-card" style="display:none">
+    <div class="savings-row">
+      <div class="savings-label">Defizit gesamt</div>
+      <div class="savings-val" id="savTotalDeficit">—</div>
+    </div>
+    <div class="savings-divider"></div>
+    <div class="savings-row">
+      <div class="savings-label">Theoret. Fettverlust</div>
+      <div class="savings-val fat" id="savFatLoss">—</div>
+    </div>
+    <div class="savings-divider"></div>
+    <div class="savings-row">
+      <div class="savings-label">Cheatdays</div>
+      <div class="savings-val neutral" id="savCheatDays">—</div>
+    </div>
+  </div>
   <div class="progress-strip" id="progressStrip"></div>
   <div class="week-selector">
     <button class="week-btn active" id="wb1" onclick="setWeek(1)">Woche 1</button>
@@ -288,6 +319,10 @@ input[type=range]::-moz-range-thumb{width:26px;height:26px;border-radius:50%;bac
     </div>
   </div>
   <div class="macro-row" id="macroRow"></div>
+  <div style="padding:0 20px 4px;display:flex;align-items:center;justify-content:space-between">
+    <div style="font-family:var(--font-mono);font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px">Tag markieren</div>
+    <button class="cheatday-btn" id="cheatdayBtn" onclick="toggleCheatday()">🍕 Cheatday</button>
+  </div>
   <div class="detail-meals" id="detailMeals"></div>
 </div>
 
@@ -297,6 +332,10 @@ input[type=range]::-moz-range-thumb{width:26px;height:26px;border-radius:50%;bac
     <div class="shop-week-sel">
       <button class="week-btn active" id="swb1" onclick="setShopWeek(1)">Woche 1</button>
       <button class="week-btn" id="swb2" onclick="setShopWeek(2)">Woche 2</button>
+    </div>
+    <div style="display:flex;gap:10px;margin-bottom:6px;align-items:center;justify-content:space-between">
+      <div style="font-family:var(--font-mono);font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px">Einkaufsliste</div>
+      <button class="s-btn danger" onclick="resetShopList()" style="padding:8px 16px;font-size:13px">Häkchen löschen</button>
     </div>
     <div id="shopList"></div>
   </div>
@@ -311,7 +350,7 @@ input[type=range]::-moz-range-thumb{width:26px;height:26px;border-radius:50%;bac
       <div class="s-row">
         <div class="s-icon">📅</div>
         <div class="s-label">Startdatum<small>Wann hast du begonnen?</small></div>
-        <input type="date" class="date-input" id="startDateInput" onchange="saveStartDate()">
+        <input type="date" class="date-input" id="startDateInput"><button class="s-btn primary" onclick="saveStartDate()" style="margin-top:8px;width:100%">Datum setzen</button>
       </div>
       <div class="s-row">
         <div class="s-icon">📊</div>
@@ -535,6 +574,7 @@ let S = {
   shopChecked: {1:{},2:{}},
   startDate: null,
   kcalTarget: 2600,
+  cheatdays: {},  // key: 'w1d3' -> true
   plan: JSON.parse(JSON.stringify(DEFAULT_PLAN)),
 };
 let swapCtx = null;
@@ -628,7 +668,7 @@ function showView(name) {
   document.getElementById(`view-${name}`).classList.add('active');
   const ns=['plan','shopping','settings'];
   document.querySelectorAll('.nav-tab').forEach((t,i)=>t.classList.toggle('active',ns[i]===name));
-  if(name==='plan'){renderWeekGrid();updateTracker();}
+  if(name==='plan'){renderWeekGrid();updateTracker();updateSavings();}
   if(name==='shopping') renderShoppingList();
 }
 
@@ -660,6 +700,8 @@ function renderWeekGrid() {
 
     const row = document.createElement('div');
     row.className=`day-row${isToday?' is-today':''}`;
+    const isCheat = isCheatday(S.week, d);
+    if(isCheat) row.classList.add('cheatday');
     row.innerHTML=`
       <div class="day-row-header">
         <div class="day-label">
@@ -670,6 +712,7 @@ function renderWeekGrid() {
           <div class="day-name-wrap">
             <div class="day-full-name">${DNAMES[d]}</div>
             ${isToday?'<div class="today-tag">● HEUTE</div>':''}
+            ${isCheat?'<span class="cheatday-badge">🍕 CHEATDAY</span>':''}
           </div>
         </div>
         <div class="day-kcal-wrap">
@@ -697,6 +740,7 @@ function renderWeekGrid() {
 function openDay(d) {
   S.currentDay=d; S.openMeals={};
   renderDayDetail(); showView('day');
+  updateCheatdayBtn();
 }
 
 function renderDayDetail() {
@@ -897,6 +941,74 @@ function toggleShop(w,name){
 // ══════════════════════════════════════════════════
 // SAVE / LOAD / RESET
 // ══════════════════════════════════════════════════
+
+// ── CHEATDAY KEY ──
+function cdKey(w,d){ return `w${w}d${d}`; }
+function isCheatday(w,d){ return !!S.cheatdays[cdKey(w,d)]; }
+
+function toggleCheatday(){
+  const key = cdKey(S.week, S.currentDay);
+  S.cheatdays[key] = !S.cheatdays[key];
+  updateCheatdayBtn();
+  renderWeekGrid();
+  updateSavings();
+  toast(S.cheatdays[key] ? '🍕 Cheatday markiert' : 'Cheatday entfernt');
+}
+
+function updateCheatdayBtn(){
+  const btn = document.getElementById('cheatdayBtn');
+  if(!btn) return;
+  const active = isCheatday(S.week, S.currentDay);
+  btn.classList.toggle('active', active);
+  btn.textContent = active ? '✓ Cheatday' : '🍕 Cheatday';
+}
+
+// ── SAVINGS CALCULATION ──
+function updateSavings(){
+  const t = calcTracker();
+  const card = document.getElementById('savingsCard');
+  if(!t || !S.startDate){ card.style.display='none'; return; }
+  card.style.display='flex';
+
+  const totalDays = t.diffDays; // days since start (not including today)
+  if(totalDays <= 0){ 
+    document.getElementById('savTotalDeficit').textContent = '—';
+    document.getElementById('savFatLoss').textContent = '—';
+    document.getElementById('savCheatDays').textContent = '0';
+    return;
+  }
+
+  const tdee = 3200;
+  const cheatKcal = S.kcalTarget + 800; // cheatday calories
+  let totalDeficit = 0;
+  let cheatCount = 0;
+
+  for(let i=0; i<totalDays; i++){
+    const cycleDay = i % 14;
+    const cw = cycleDay < 7 ? 1 : 2;
+    const cd = cycleDay % 7;
+    const key = cdKey(cw, cd);
+    if(S.cheatdays[key]){
+      totalDeficit += Math.max(0, tdee - cheatKcal);
+      cheatCount++;
+    } else {
+      totalDeficit += Math.max(0, tdee - S.kcalTarget);
+    }
+  }
+
+  const fatLossKg = (totalDeficit / 7700).toFixed(2);
+  document.getElementById('savTotalDeficit').textContent = totalDeficit.toLocaleString('de') + ' kcal';
+  document.getElementById('savFatLoss').textContent = fatLossKg + ' kg';
+  document.getElementById('savCheatDays').textContent = cheatCount + (cheatCount===1?' Tag':' Tage');
+}
+
+// ── SHOPPING RESET ──
+function resetShopList(){
+  S.shopChecked = {1:{},2:{}};
+  renderShoppingList();
+  toast('Einkaufsliste zurückgesetzt ✓');
+}
+
 function updateKcalTarget(val) {
   val = parseInt(val);
   S.kcalTarget = val;
@@ -942,6 +1054,7 @@ function savePlan(){
     shopChecked: S.shopChecked,
     startDate: S.startDate||'',
     kcalTarget: S.kcalTarget,
+    cheatdays: S.cheatdays,
     savedAt: new Date().toISOString(),
   };
   const blob = new Blob([JSON.stringify(data, null, 2)], {type:'application/json'});
@@ -968,6 +1081,7 @@ function loadPlan(){
         if(data.plan) S.plan = data.plan;
         if(data.shopChecked) S.shopChecked = data.shopChecked;
         if(data.startDate) { S.startDate = data.startDate; document.getElementById('startDateInput').value = data.startDate; }
+        if(data.cheatdays) S.cheatdays = data.cheatdays;
         if(data.kcalTarget) { S.kcalTarget = data.kcalTarget; document.getElementById('kcalSlider').value = data.kcalTarget; updateKcalTarget(data.kcalTarget); }
         renderWeekGrid(); updateTracker();
         toast('Plan geladen ✓');
@@ -981,6 +1095,7 @@ function resetPlan(){
   if(confirm('Alles zurücksetzen? Plan, Einkaufsliste, Startdatum und Kalorienziel werden gelöscht.')){
     S.plan = JSON.parse(JSON.stringify(DEFAULT_PLAN));
     S.shopChecked = {1:{},2:{}};
+    S.cheatdays = {};
     S.startDate = null;
     S.kcalTarget = 2600;
     localStorage.clear();
@@ -1005,6 +1120,7 @@ window.addEventListener('load',()=>{
   updateKcalTarget(S.kcalTarget);
   renderWeekGrid();
   updateTracker();
+  updateSavings();
 });
 </script>
 </body>
