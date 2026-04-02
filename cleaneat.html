@@ -1,0 +1,1011 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0a0a0a">
+<title>Clean Eating Plan</title>
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#0f0f0f;--surf:#181818;--card:#202020;--card2:#282828;
+  --border:#303030;--border2:#3a3a3a;
+  --acc:#c8f026;--acc-dim:rgba(200,240,38,0.1);
+  --text:#f0f0f0;--muted:#666;--muted2:#999;
+  --prot:#c8f026;--carb:#26c8f0;--fat:#f0a026;
+  --r:16px;--r2:12px;
+  --font-mono:'Courier New',Courier,monospace;
+  --font-body:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--font-body);min-height:100vh;overflow-x:hidden;-webkit-font-smoothing:antialiased;padding-bottom:90px;font-size:16px}
+::-webkit-scrollbar{width:2px;height:2px}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:10px}
+button{font-family:var(--font-body);cursor:pointer}
+
+/* HEADER */
+.app-header{padding:52px 20px 20px;background:linear-gradient(180deg,#161616 0%,var(--bg) 100%);border-bottom:1px solid var(--border);position:relative;overflow:hidden}
+.header-glow{position:absolute;top:-60px;right:-40px;width:240px;height:240px;background:radial-gradient(circle,rgba(200,240,38,0.08) 0%,transparent 70%);pointer-events:none}
+.header-top{display:flex;align-items:flex-start;justify-content:space-between;gap:14px}
+.eyebrow{font-family:var(--font-mono);font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--acc);margin-bottom:6px}
+.app-title{font-size:38px;font-weight:800;letter-spacing:-1.5px;line-height:1;color:var(--text)}
+.app-title span{color:var(--acc)}
+
+/* TRACKER CARD */
+.tracker-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:14px 16px;min-width:120px;text-align:right;flex-shrink:0}
+.tracker-week-num{font-size:44px;font-weight:900;letter-spacing:-2px;line-height:1;color:var(--acc)}
+.tracker-label{font-family:var(--font-mono);font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-top:2px}
+.tracker-sub{font-family:var(--font-mono);font-size:11px;color:var(--muted2);margin-top:8px;border-top:1px solid var(--border);padding-top:8px;line-height:1.4}
+
+.header-pills{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
+.pill{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;background:var(--card);border:1px solid var(--border);border-radius:20px;font-size:13px;color:var(--muted2)}
+.pill .dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+
+/* NAV */
+.main-nav{display:flex;background:var(--surf);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100}
+.nav-tab{flex:1;padding:14px 8px;text-align:center;font-size:11px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;color:var(--muted);border:none;background:none;border-bottom:2px solid transparent;transition:all 0.15s}
+.nav-tab.active{color:var(--acc);border-bottom-color:var(--acc)}
+.nav-tab .ni{display:block;font-size:20px;margin-bottom:3px}
+
+/* VIEWS */
+.view{display:none;animation:fadeUp 0.2s ease}
+.view.active{display:block}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+/* TODAY BANNER */
+.today-banner{margin:16px 20px 0;background:var(--acc-dim);border:1px solid rgba(200,240,38,0.2);border-radius:var(--r);padding:16px 18px;display:flex;align-items:center;justify-content:space-between}
+.today-day-name{font-size:26px;font-weight:800;letter-spacing:-1px;color:var(--acc)}
+.today-meta{font-size:13px;color:var(--acc);opacity:.7;margin-top:3px}
+.today-cycle{font-family:var(--font-mono);font-size:12px;color:var(--muted2);text-align:right;line-height:1.5}
+
+/* WEEK SELECTOR */
+.week-selector{display:flex;gap:10px;padding:18px 20px 0}
+.week-btn{flex:1;padding:13px;background:var(--card);border:1px solid var(--border);border-radius:var(--r2);color:var(--muted2);font-size:14px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;transition:all 0.15s;text-align:center}
+.week-btn.active{background:var(--acc);border-color:var(--acc);color:#0f0f0f}
+
+/* PROGRESS STRIP */
+.progress-strip{display:flex;gap:6px;padding:14px 20px 0}
+.prog-day{flex:1;height:48px;border-radius:10px;background:var(--card);border:1px solid var(--border);display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;transition:all 0.15s}
+.prog-day.today{background:var(--acc);border-color:var(--acc)}
+.prog-day.past{background:var(--card2);opacity:.6}
+.prog-day .pd-num{font-size:18px;font-weight:800;line-height:1;color:var(--muted2)}
+.prog-day.today .pd-num{color:#0f0f0f}
+.prog-day .pd-day{font-family:var(--font-mono);font-size:9px;letter-spacing:1px;color:var(--muted);text-transform:uppercase;margin-top:2px}
+.prog-day.today .pd-day{color:rgba(0,0,0,0.5)}
+
+/* WEEK GRID */
+.week-grid{padding:16px 20px;display:flex;flex-direction:column;gap:10px}
+.day-row{background:var(--card);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;cursor:pointer;transition:border-color 0.15s;animation:slideUp 0.25s ease both}
+.day-row.is-today{border-color:rgba(200,240,38,0.5);border-width:1.5px}
+.day-row:hover{border-color:var(--border2)}
+.day-row:nth-child(1){animation-delay:.02s}.day-row:nth-child(2){animation-delay:.05s}
+.day-row:nth-child(3){animation-delay:.08s}.day-row:nth-child(4){animation-delay:.11s}
+.day-row:nth-child(5){animation-delay:.14s}.day-row:nth-child(6){animation-delay:.17s}
+.day-row:nth-child(7){animation-delay:.20s}
+@keyframes slideUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+
+.day-row-header{display:flex;align-items:center;justify-content:space-between;padding:16px 18px 10px}
+.day-label{display:flex;align-items:center;gap:12px}
+.day-badge{width:46px;height:46px;border-radius:10px;background:var(--card2);display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0}
+.day-badge.today-badge{background:var(--acc)}
+.day-badge .db-num{font-size:22px;font-weight:900;line-height:1;color:var(--text)}
+.day-badge.today-badge .db-num{color:#0f0f0f}
+.day-badge .db-short{font-family:var(--font-mono);font-size:9px;letter-spacing:1px;color:var(--muted);text-transform:uppercase}
+.day-badge.today-badge .db-short{color:rgba(0,0,0,0.5)}
+.day-full-name{font-size:18px;font-weight:700;letter-spacing:-.5px}
+.today-tag{font-family:var(--font-mono);font-size:10px;color:var(--acc);letter-spacing:1px;margin-top:2px}
+.day-kcal-wrap{text-align:right}
+.day-kcal-num{font-size:26px;font-weight:800;letter-spacing:-1px;color:var(--text);line-height:1}
+.day-kcal-lbl{font-family:var(--font-mono);font-size:10px;color:var(--muted);margin-top:1px}
+
+.day-chips{display:flex;gap:6px;padding:0 14px 14px}
+.meal-chip{flex:1;padding:10px 6px;background:var(--card2);border-radius:10px;text-align:center}
+.mc-icon{font-size:18px;display:block}
+.mc-name{font-size:11px;color:var(--muted2);margin-top:4px;display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;line-height:1.3}
+
+.day-bar{height:3px;display:flex;margin:0 14px 14px;border-radius:2px;overflow:hidden;gap:1px}
+.db-p{background:var(--prot)}.db-c{background:var(--carb)}.db-f{background:var(--fat)}
+
+/* DAY DETAIL */
+.detail-nav{display:flex;align-items:center;gap:14px;padding:16px 20px;border-bottom:1px solid var(--border)}
+.back-btn{width:42px;height:42px;background:var(--card);border:1px solid var(--border);border-radius:12px;display:flex;align-items:center;justify-content:center;color:var(--text);font-size:20px;flex-shrink:0}
+.detail-title{font-size:24px;font-weight:800;letter-spacing:-.5px}
+.detail-meta{font-family:var(--font-mono);font-size:11px;color:var(--muted);margin-top:3px}
+
+.macro-row{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;padding:16px 20px}
+.mac-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r2);padding:14px 8px;text-align:center}
+.mac-val{font-size:22px;font-weight:800;letter-spacing:-.5px;line-height:1}
+.mac-lbl{font-family:var(--font-mono);font-size:10px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-top:5px}
+.mac-card.k .mac-val{color:var(--text)}
+.mac-card.p .mac-val{color:var(--prot)}
+.mac-card.c .mac-val{color:var(--carb)}
+.mac-card.f .mac-val{color:var(--fat)}
+
+.detail-meals{padding:0 20px 20px;display:flex;flex-direction:column;gap:12px}
+
+/* MEAL CARD */
+.meal-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);overflow:hidden}
+.meal-card-header{display:flex;align-items:center;justify-content:space-between;padding:16px 18px;cursor:pointer}
+.mch-left{display:flex;align-items:center;gap:14px}
+.meal-emoji-wrap{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0}
+.bk-wrap{background:rgba(200,240,38,0.1)}.ln-wrap{background:rgba(38,200,240,0.1)}.dn-wrap{background:rgba(240,160,38,0.1)}
+.meal-type-lbl{font-family:var(--font-mono);font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted)}
+.meal-name{font-size:16px;font-weight:700;margin-top:3px;letter-spacing:-.3px}
+.mch-right{display:flex;align-items:center;gap:10px}
+.meal-kcal-big{font-size:26px;font-weight:800;letter-spacing:-1px;line-height:1}
+.meal-kcal-lbl{font-family:var(--font-mono);font-size:10px;color:var(--muted);display:block;text-align:right;margin-top:2px}
+.swap-btn{width:36px;height:36px;background:var(--card2);border:1px solid var(--border);border-radius:10px;display:flex;align-items:center;justify-content:center;color:var(--muted2);font-size:16px;transition:all 0.15s;flex-shrink:0}
+.swap-btn:hover{background:var(--acc);border-color:var(--acc);color:#0f0f0f}
+.chevron{font-size:13px;color:var(--muted);transition:transform 0.2s;flex-shrink:0}
+.chevron.open{transform:rotate(180deg)}
+
+.meal-body{border-top:1px solid var(--border);padding:16px 18px;display:none}
+.meal-body.open{display:block}
+.sec-lbl{font-family:var(--font-mono);font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:10px}
+.ing-list{display:flex;flex-direction:column;gap:8px;margin-bottom:16px}
+.ing-row{display:flex;gap:10px;font-size:15px;align-items:baseline}
+.ing-row::before{content:'';width:4px;height:4px;border-radius:50%;background:var(--border2);flex-shrink:0;position:relative;top:-1px}
+.ing-a{font-family:var(--font-mono);font-size:12px;color:var(--acc);min-width:90px;flex-shrink:0}
+.ing-n{color:var(--muted2)}
+.prep-block{background:var(--card2);border-radius:var(--r2);padding:14px 16px;font-size:15px;color:var(--muted2);line-height:1.7;margin-bottom:10px}
+.prep-tip{background:rgba(200,240,38,0.06);border:1px solid rgba(200,240,38,0.18);border-radius:var(--r2);padding:12px 14px;font-size:14px;color:var(--acc);line-height:1.6}
+.meal-macro-strip{display:flex;gap:20px;border-top:1px solid var(--border);padding-top:14px;margin-top:14px}
+.mms-item{font-family:var(--font-mono)}
+.mms-val{font-size:18px;font-weight:600}
+.mms-lbl{font-size:10px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-top:3px}
+.mms-item.p .mms-val{color:var(--prot)}
+.mms-item.c .mms-val{color:var(--carb)}
+.mms-item.f .mms-val{color:var(--fat)}
+
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;z-index:200;background:rgba(0,0,0,0.85);backdrop-filter:blur(8px);display:none;align-items:flex-end}
+.modal-overlay.open{display:flex}
+.modal-sheet{width:100%;max-height:85vh;background:#1a1a1a;border-top:1px solid var(--border);border-radius:20px 20px 0 0;overflow:hidden;display:flex;flex-direction:column;animation:sheetUp 0.22s cubic-bezier(0.34,1.4,0.64,1)}
+@keyframes sheetUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.modal-drag{width:36px;height:4px;background:var(--border2);border-radius:2px;margin:14px auto 0;flex-shrink:0}
+.modal-hdr{padding:14px 20px 16px;border-bottom:1px solid var(--border);flex-shrink:0}
+.modal-title{font-size:22px;font-weight:800;letter-spacing:-.5px}
+.modal-sub{font-family:var(--font-mono);font-size:11px;color:var(--muted);margin-top:4px}
+.modal-list{overflow-y:auto;flex:1;padding:10px 16px 40px;display:flex;flex-direction:column;gap:8px}
+.swap-item{display:flex;align-items:center;gap:14px;padding:14px 16px;background:var(--card);border:1px solid var(--border);border-radius:var(--r2);cursor:pointer;transition:all 0.14s}
+.swap-item:hover{border-color:var(--acc)}
+.swap-item.current{border-color:var(--acc);background:rgba(200,240,38,0.07);cursor:default}
+.si-icon{font-size:26px;flex-shrink:0}
+.si-info{flex:1;min-width:0}
+.si-name{font-size:15px;font-weight:600;letter-spacing:-.3px}
+.si-prep{font-family:var(--font-mono);font-size:11px;color:var(--muted);margin-top:3px}
+.si-macros{font-family:var(--font-mono);font-size:11px;color:var(--muted2);margin-top:4px}
+.si-kcal{text-align:right;flex-shrink:0}
+.si-kcal-num{font-size:22px;font-weight:800;letter-spacing:-.5px;line-height:1}
+.si-kcal-lbl{font-family:var(--font-mono);font-size:10px;color:var(--muted);display:block;margin-top:2px}
+.active-tag{font-family:var(--font-mono);font-size:9px;background:var(--acc);color:#0f0f0f;padding:3px 7px;border-radius:4px;letter-spacing:1px;vertical-align:middle;margin-left:6px}
+
+/* SHOPPING */
+.shop-wrap{padding:16px 20px 20px}
+.shop-week-sel{display:flex;gap:10px;margin-bottom:16px}
+.shop-cat{margin-bottom:22px}
+.shop-cat-hdr{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.shop-cat-icon{font-size:20px}
+.shop-cat-name{font-size:18px;font-weight:700;letter-spacing:-.3px}
+.shop-items{display:flex;flex-direction:column;gap:7px}
+.shop-item{display:flex;align-items:center;gap:14px;padding:14px 16px;background:var(--card);border:1px solid var(--border);border-radius:var(--r2);cursor:pointer;transition:opacity 0.15s}
+.shop-item.done{opacity:.35}
+.shop-cb{width:24px;height:24px;border:2px solid var(--border2);border-radius:7px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:13px;transition:all 0.14s}
+.shop-item.done .shop-cb{background:var(--acc);border-color:var(--acc);color:#0f0f0f}
+.shop-iname{flex:1;font-size:15px;font-weight:500}
+.shop-item.done .shop-iname{text-decoration:line-through;color:var(--muted)}
+.shop-amt{font-family:var(--font-mono);font-size:12px;color:var(--acc)}
+.shop-cnt{font-family:var(--font-mono);font-size:10px;color:var(--muted);margin-left:3px}
+
+/* SETTINGS */
+.settings-wrap{padding:16px 20px 20px}
+.s-section-lbl{font-family:var(--font-mono);font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin:22px 0 10px}
+.s-section-lbl:first-child{margin-top:0}
+.s-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);overflow:hidden}
+.s-row{display:flex;align-items:center;gap:14px;padding:16px 18px;border-bottom:1px solid var(--border);font-size:15px}
+.s-row:last-child{border-bottom:none}
+.s-icon{font-size:22px;flex-shrink:0}
+.s-label{flex:1;font-size:15px;font-weight:500}
+.s-label small{display:block;font-size:13px;color:var(--muted);margin-top:3px;font-weight:400}
+.s-btn{padding:10px 18px;background:var(--card2);border:1px solid var(--border);border-radius:10px;color:var(--text);font-size:14px;font-weight:600;transition:all 0.14s}
+.s-btn:hover{border-color:var(--acc);color:var(--acc)}
+.s-btn.danger:hover{border-color:#f55;color:#f55}
+.s-btn.primary{background:var(--acc);border-color:var(--acc);color:#0f0f0f}
+.date-input{background:var(--card2);border:1px solid var(--border);border-radius:10px;color:var(--text);font-size:14px;padding:10px 14px;-webkit-appearance:none;width:100%;margin-top:6px}
+.date-input:focus{outline:none;border-color:var(--acc)}
+
+/* SLIDER */
+.kcal-display{font-size:40px;font-weight:900;letter-spacing:-2px;color:var(--acc);line-height:1}
+.kcal-hint{margin-top:12px;padding:12px 14px;background:var(--acc-dim);border:1px solid rgba(200,240,38,0.2);border-radius:10px;font-size:14px;color:var(--acc);line-height:1.5}
+input[type=range]{width:100%;-webkit-appearance:none;appearance:none;height:6px;border-radius:3px;background:var(--border);outline:none;cursor:pointer;margin:14px 0 6px}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:26px;height:26px;border-radius:50%;background:var(--acc);cursor:pointer;border:3px solid #0f0f0f;box-shadow:0 0 0 2px var(--acc)}
+input[type=range]::-moz-range-thumb{width:26px;height:26px;border-radius:50%;background:var(--acc);cursor:pointer;border:3px solid #0f0f0f}
+.slider-labels{display:flex;justify-content:space-between;font-family:var(--font-mono);font-size:11px;color:var(--muted)}
+.macro-targets{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:18px 18px 10px}
+.mtr{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.mtr-lbl{font-family:var(--font-mono);font-size:12px;width:60px;flex-shrink:0}
+.mtr-bar{flex:1;height:6px;background:var(--border);border-radius:3px;overflow:hidden}
+.mtr-fill{height:100%;border-radius:3px;transition:width 0.3s ease}
+.mtr-val{font-family:var(--font-mono);font-size:12px;color:var(--muted2);min-width:65px;text-align:right}
+
+/* TOAST */
+.toast{position:fixed;bottom:100px;left:50%;transform:translateX(-50%) translateY(16px);background:var(--acc);color:#0f0f0f;font-size:14px;font-weight:600;padding:12px 22px;border-radius:24px;z-index:300;opacity:0;transition:all 0.22s;white-space:nowrap;pointer-events:none}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body>
+
+<header class="app-header">
+  <div class="header-glow"></div>
+  <div class="header-top">
+    <div class="header-title-block">
+      <div class="eyebrow">Recomp Protocol</div>
+      <div class="app-title">Clean <span>Eating</span></div>
+    </div>
+    <div class="tracker-card" id="trackerCard">
+      <div class="tracker-week-num" id="trackerWeekNum">—</div>
+      <div class="tracker-label">Programm-Woche</div>
+      <div class="tracker-sub" id="trackerSub">Startdatum setzen →</div>
+    </div>
+  </div>
+  <div class="header-pills">
+    <div class="pill"><span class="dot" style="background:var(--acc)"></span>~2.800 kcal</div>
+    <div class="pill"><span class="dot" style="background:var(--prot)"></span>~230g Protein</div>
+    <div class="pill"><span class="dot" style="background:var(--fat)"></span>−900 kcal Defizit</div>
+  </div>
+</header>
+
+<nav class="main-nav">
+  <button class="nav-tab active" onclick="showView('plan')"><span class="ni">📅</span>Plan</button>
+  <button class="nav-tab" onclick="showView('shopping')"><span class="ni">🛒</span>Einkauf</button>
+  <button class="nav-tab" onclick="showView('settings')"><span class="ni">⚙️</span>Settings</button>
+</nav>
+
+<!-- PLAN VIEW -->
+<div id="view-plan" class="view active">
+  <div id="todayBanner" style="display:none" class="today-banner">
+    <div>
+      <div class="today-day-name" id="todayDayName">—</div>
+      <div class="today-meta" id="todayMeta">—</div>
+    </div>
+    <div class="today-cycle" id="todayCycle">—</div>
+  </div>
+  <div class="progress-strip" id="progressStrip"></div>
+  <div class="week-selector">
+    <button class="week-btn active" id="wb1" onclick="setWeek(1)">Woche 1</button>
+    <button class="week-btn" id="wb2" onclick="setWeek(2)">Woche 2</button>
+  </div>
+  <div class="week-grid" id="weekGrid"></div>
+</div>
+
+<!-- DAY VIEW -->
+<div id="view-day" class="view">
+  <div class="detail-nav">
+    <button class="back-btn" onclick="showView('plan')">←</button>
+    <div>
+      <div class="detail-title" id="detailTitle">—</div>
+      <div class="detail-meta" id="detailMeta">—</div>
+    </div>
+  </div>
+  <div class="macro-row" id="macroRow"></div>
+  <div class="detail-meals" id="detailMeals"></div>
+</div>
+
+<!-- SHOPPING VIEW -->
+<div id="view-shopping" class="view">
+  <div class="shop-wrap">
+    <div class="shop-week-sel">
+      <button class="week-btn active" id="swb1" onclick="setShopWeek(1)">Woche 1</button>
+      <button class="week-btn" id="swb2" onclick="setShopWeek(2)">Woche 2</button>
+    </div>
+    <div id="shopList"></div>
+  </div>
+</div>
+
+<!-- SETTINGS VIEW -->
+<div id="view-settings" class="view">
+  <div class="settings-wrap">
+
+    <div class="s-section-lbl">Programm-Tracker</div>
+    <div class="s-card">
+      <div class="s-row">
+        <div class="s-icon">📅</div>
+        <div class="s-label">Startdatum<small>Wann hast du begonnen?</small></div>
+        <input type="date" class="date-input" id="startDateInput" onchange="saveStartDate()">
+      </div>
+      <div class="s-row">
+        <div class="s-icon">📊</div>
+        <div class="s-label">Status<small id="trackerStatusText">Kein Startdatum gesetzt</small></div>
+      </div>
+    </div>
+
+    <div class="s-section-lbl">Plan speichern & laden</div>
+    <div class="s-card">
+      <div class="s-row">
+        <div class="s-icon">💾</div>
+        <div class="s-label">Speichern<small>Gericht-Auswahl & Einstellungen sichern</small></div>
+        <button class="s-btn primary" onclick="savePlan()">Speichern</button>
+      </div>
+      <div class="s-row">
+        <div class="s-icon">📥</div>
+        <div class="s-label">Laden<small>Gespeicherten Plan wiederherstellen</small></div>
+        <button class="s-btn" onclick="loadPlan()">Laden</button>
+      </div>
+      <div class="s-row">
+        <div class="s-icon">🔄</div>
+        <div class="s-label">Zurücksetzen<small>Auf Standard-Plan zurücksetzen</small></div>
+        <button class="s-btn danger" onclick="resetPlan()">Reset</button>
+      </div>
+    </div>
+
+    <div class="s-section-lbl">Kalorienziel</div>
+    <div class="macro-targets">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+        <div style="font-family:var(--font-mono);font-size:12px;color:var(--muted2)">Tagesziel</div>
+        <div class="kcal-display" id="kcalDisplay">2.600 kcal</div>
+      </div>
+      <input type="range" id="kcalSlider" min="1800" max="3500" step="100" value="2600" oninput="updateKcalTarget(this.value)">
+      <div class="slider-labels">
+        <span>1.800</span><span>2.200</span><span>2.600</span><span>3.000</span><span>3.500</span>
+      </div>
+      <div class="kcal-hint" id="kcalHint">~0,5–0,75 kg Verlust/Woche</div>
+      <div style="height:16px"></div>
+      <div class="mtr"><div class="mtr-lbl" style="color:var(--prot)">Protein</div><div class="mtr-bar"><div class="mtr-fill" id="mtr-prot" style="background:var(--prot)"></div></div><div class="mtr-val" id="mtrv-prot">~200g</div></div>
+      <div class="mtr"><div class="mtr-lbl" style="color:var(--carb)">Carbs</div><div class="mtr-bar"><div class="mtr-fill" id="mtr-carb" style="background:var(--carb)"></div></div><div class="mtr-val" id="mtrv-carb">~210g</div></div>
+      <div class="mtr"><div class="mtr-lbl" style="color:var(--fat)">Fett</div><div class="mtr-bar"><div class="mtr-fill" id="mtr-fat" style="background:var(--fat)"></div></div><div class="mtr-val" id="mtrv-fat">~65g</div></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="swapModal" onclick="closeModal(event)">
+  <div class="modal-sheet">
+    <div class="modal-drag"></div>
+    <div class="modal-hdr">
+      <div class="modal-title">Gericht tauschen</div>
+      <div class="modal-sub" id="modalSub">—</div>
+    </div>
+    <div class="modal-list" id="modalList"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ══════════════════════════════════════════════════
+// MEAL DATABASE
+// ══════════════════════════════════════════════════
+const DB = {
+  breakfast: [
+    {id:'b1',name:'Porridge Classic',emoji:'🥣',prepTime:'8 Min',macros:{kcal:720,p:42,c:78,f:20},
+     ingredients:[{a:'80g',n:'Haferflocken'},{a:'250ml',n:'Wasser'},{a:'200ml',n:'Proteinsahne'},{a:'1 Stk.',n:'Apfel (gewürfelt)'},{a:'15g',n:'Walnüsse'},{a:'1 TL',n:'Zimt'}],
+     prep:'Haferflocken mit Wasser aufkochen, 3–4 Min rühren bis cremig. Proteinsahne einrühren, kurz weiter erhitzen. Apfel würfeln, mit Walnüssen & Zimt als Topping.',
+     tip:'✅ Apfel & Nüsse abends vorbereiten. Oats morgens in 5 Min fertig.'},
+    {id:'b2',name:'Porridge Berry',emoji:'🍓',prepTime:'8 Min',macros:{kcal:700,p:40,c:80,f:16},
+     ingredients:[{a:'80g',n:'Haferflocken'},{a:'250ml',n:'Wasser'},{a:'200ml',n:'Proteinsahne'},{a:'1 Stk.',n:'Apfel (gerieben)'},{a:'100g',n:'TK-Beeren (aufgetaut)'},{a:'1 EL',n:'Chiasamen'}],
+     prep:'Haferflocken mit Wasser aufkochen. Proteinsahne einrühren. Geriebenen Apfel einrühren für natürliche Süße. Beeren & Chia als Topping.',
+     tip:'✅ TK-Beeren über Nacht auftauen lassen.'},
+    {id:'b3',name:'Porridge Choco',emoji:'🍫',prepTime:'8 Min',macros:{kcal:730,p:44,c:76,f:22},
+     ingredients:[{a:'80g',n:'Haferflocken'},{a:'250ml',n:'Wasser'},{a:'200ml',n:'Proteinsahne Schokolade'},{a:'1 Stk.',n:'Apfel (gewürfelt)'},{a:'15g',n:'Mandeln (gehackt)'},{a:'1 TL',n:'Kakao (ungesüßt)'}],
+     prep:'Haferflocken mit Wasser kochen. Schoko-Proteinsahne & Kakao einrühren. Apfel & Mandeln als Topping.',
+     tip:'✅ Sättigendste Variante durch höheren Fettgehalt der Mandeln.'},
+    {id:'b4',name:'Porridge Banana',emoji:'🍌',prepTime:'8 Min',macros:{kcal:740,p:41,c:85,f:16},
+     ingredients:[{a:'80g',n:'Haferflocken'},{a:'250ml',n:'Wasser'},{a:'200ml',n:'Proteinsahne'},{a:'1 Stk.',n:'Apfel (gewürfelt)'},{a:'½ Stk.',n:'Banane (in Scheiben)'},{a:'1 TL',n:'Zimt'}],
+     prep:'Haferflocken kochen. Proteinsahne einrühren. Apfel & Bananenscheiben drauf, Zimt drüber. Beste Option vor intensivem Training.',
+     tip:'✅ Höchste Carb-Variante – ideal an Trainingstagen.'},
+    {id:'b5',name:'Porridge Nuss',emoji:'🌰',prepTime:'8 Min',macros:{kcal:760,p:43,c:75,f:26},
+     ingredients:[{a:'80g',n:'Haferflocken'},{a:'250ml',n:'Wasser'},{a:'200ml',n:'Proteinsahne'},{a:'1 Stk.',n:'Apfel (gewürfelt)'},{a:'10g',n:'Cashews'},{a:'10g',n:'Haselnüsse'},{a:'1 TL',n:'Honig'}],
+     prep:'Haferflocken kochen. Proteinsahne einrühren. Apfel, gemischte Nüsse & Honig drüber. Reichhaltigste Variante.',
+     tip:'✅ An Ruhetagen ideal – mehr gesunde Fette, etwas weniger Carbs.'},
+    {id:'b6',name:'Porridge Hafer Kleie',emoji:'🌾',prepTime:'8 Min',macros:{kcal:690,p:43,c:70,f:18},
+     ingredients:[{a:'60g',n:'Haferflocken'},{a:'20g',n:'Haferkleie'},{a:'250ml',n:'Wasser'},{a:'200ml',n:'Proteinsahne'},{a:'1 Stk.',n:'Apfel (gewürfelt)'},{a:'1 EL',n:'Leinsamen'}],
+     prep:'Haferflocken & Kleie zusammen mit Wasser aufkochen – Kleie macht es cremiger. Proteinsahne einrühren. Apfel & Leinsamen drauf.',
+     tip:'✅ Beste Option für Verdauung & Sättigung durch hohen Ballaststoffgehalt.'},
+  ],
+  lunch: [
+    {id:'l1',name:'Reis + Hackfleischsoße',emoji:'🍝',prepTime:'25 Min',macros:{kcal:980,p:82,c:108,f:26},
+     ingredients:[{a:'130g roh',n:'Basmatireis'},{a:'300g',n:'Rinderhack (10% Fett)'},{a:'400g',n:'Passierte Tomaten'},{a:'1 Stk.',n:'Zwiebel'},{a:'2 Zehen',n:'Knoblauch'},{a:'Salz, Pfeffer',n:'Paprikapulver, Oregano'}],
+     prep:'Zwiebel & Knoblauch fein würfeln, in Pfanne anschwitzen. Hack dazu, scharf anbraten & krümelig rühren. Passierte Tomaten & Gewürze dazu, 15 Min köcheln lassen. Reis parallel in 1:2 Wasser 18 Min kochen.',
+     tip:'✅ MEAL PREP: 5× Portion kochen. Sauce & Reis getrennt in Boxen – 5 Tage haltbar.'},
+    {id:'l2',name:'Reis + Hähnchen + Brokkoli',emoji:'🍗',prepTime:'25 Min',macros:{kcal:960,p:85,c:102,f:18},
+     ingredients:[{a:'130g roh',n:'Basmatireis'},{a:'300g',n:'Hähnchenbrustfilet'},{a:'300g',n:'Brokkoli'},{a:'15ml',n:'Olivenöl'},{a:'Salz, Pfeffer',n:'Knoblauchpulver, Paprika'}],
+     prep:'Hähnchen in Würfel schneiden, mit Gewürzen in Olivenöl 8–10 Min goldbraun braten. Brokkoli in Röschen, 6 Min in kochendem Salzwasser blanchieren. Reis kochen.',
+     tip:'✅ MEAL PREP: Klassiker für die ganze Woche. 5 Portionen Sonntag vorkochen – 5 Tage haltbar.'},
+    {id:'l3',name:'Reis + Lachs + Bohnen',emoji:'🐠',prepTime:'20 Min',macros:{kcal:990,p:78,c:100,f:36},
+     ingredients:[{a:'130g roh',n:'Basmatireis'},{a:'280g',n:'Lachsfilet'},{a:'200g',n:'Grüne Bohnen (TK)'},{a:'10ml',n:'Olivenöl'},{a:'½ Stk.',n:'Zitrone'},{a:'Salz, Pfeffer',n:'Dill'}],
+     prep:'Lachs mit Salz, Pfeffer & Zitrone würzen, in Pfanne mit Öl 4 Min pro Seite braten. Bohnen aus der TK direkt in kochendem Salzwasser 5 Min garen. Reis kochen.',
+     tip:'⚠️ Lachs täglich frisch braten. Reis & Bohnen vorkochen ok.'},
+    {id:'l4',name:'Reis + Pute + Paprika',emoji:'🌶️',prepTime:'20 Min',macros:{kcal:940,p:84,c:100,f:16},
+     ingredients:[{a:'130g roh',n:'Basmatireis'},{a:'300g',n:'Putenbrust'},{a:'300g',n:'Paprika (bunt, Streifen)'},{a:'1 Stk.',n:'Zwiebel'},{a:'10ml',n:'Olivenöl'},{a:'Salz, Pfeffer',n:'Paprikapulver, Kreuzkümmel'}],
+     prep:'Pute in Streifen schneiden, mit Gewürzen in Olivenöl anbraten. Zwiebel & Paprika dazugeben, 5–6 Min mitbraten bis Paprika weich. Reis kochen.',
+     tip:'✅ MEAL PREP: 5 Tage haltbar. Paprika nicht zu weich kochen für bessere Textur.'},
+    {id:'l5',name:'Reis + Hack + Paprikasoße',emoji:'🍅',prepTime:'25 Min',macros:{kcal:970,p:82,c:105,f:26},
+     ingredients:[{a:'130g roh',n:'Basmatireis'},{a:'300g',n:'Rinderhack (10% Fett)'},{a:'2 Stk.',n:'Paprika (rot + gelb)'},{a:'400g',n:'Passierte Tomaten'},{a:'1 Stk.',n:'Zwiebel'},{a:'Salz, Pfeffer',n:'Paprikapulver, Cumin'}],
+     prep:'Hack & Zwiebel anbraten. Paprika in Würfel dazu, 4 Min mitbraten. Passierte Tomaten & Gewürze dazu, 12 Min köcheln. Über Reis.',
+     tip:'✅ MEAL PREP: 5 Tage haltbar. Variante der Hacksoße mit mehr Gemüse.'},
+    {id:'l6',name:'Reis + Hähnchen + Zucchini',emoji:'🥒',prepTime:'20 Min',macros:{kcal:940,p:82,c:100,f:18},
+     ingredients:[{a:'130g roh',n:'Basmatireis'},{a:'300g',n:'Hähnchenbrustfilet'},{a:'300g',n:'Zucchini (Scheiben)'},{a:'2 Zehen',n:'Knoblauch'},{a:'10ml',n:'Olivenöl'},{a:'Salz, Pfeffer',n:'Kräuter der Provence'}],
+     prep:'Hähnchen würfeln & anbraten. Zucchini in Scheiben & Knoblauch dazu, 5 Min mitbraten. Kräuter drüber. Reis kochen.',
+     tip:'✅ MEAL PREP: 4 Tage haltbar. Zucchini nicht zu weich garen.'},
+    {id:'l7',name:'Reis + Lachs + Brokkoli',emoji:'🥦',prepTime:'20 Min',macros:{kcal:1000,p:80,c:98,f:38},
+     ingredients:[{a:'130g roh',n:'Basmatireis'},{a:'280g',n:'Lachsfilet'},{a:'300g',n:'Brokkoli'},{a:'10ml',n:'Olivenöl'},{a:'½ Stk.',n:'Zitrone'},{a:'Salz, Pfeffer',n:''}],
+     prep:'Lachs in Pfanne mit Öl 4 Min/Seite. Brokkoli blanchieren. Reis kochen. Mit Zitrone servieren.',
+     tip:'⚠️ Lachs täglich frisch. Brokkoli & Reis vorkochen ok.'},
+    {id:'l8',name:'Reis + Pute + Brokkoli',emoji:'🍽️',prepTime:'20 Min',macros:{kcal:930,p:85,c:100,f:14},
+     ingredients:[{a:'130g roh',n:'Basmatireis'},{a:'300g',n:'Putenbrust'},{a:'300g',n:'Brokkoli'},{a:'10ml',n:'Olivenöl'},{a:'Salz, Pfeffer',n:'Knoblauchpulver'}],
+     prep:'Pute in Streifen braten. Brokkoli blanchieren. Reis kochen. Simpelste & leanste Option im Plan.',
+     tip:'✅ MEAL PREP: 5 Tage haltbar. Leanste Mittagsvariante.'},
+  ],
+  dinner: [
+    {id:'d1',name:'Hähnchen Linsen Curry',emoji:'🍛',prepTime:'30 Min',macros:{kcal:870,p:78,c:80,f:26},
+     ingredients:[{a:'250g',n:'Hähnchenbrustfilet'},{a:'150g roh',n:'Rote Linsen'},{a:'200ml',n:'Kokosmilch (Light)'},{a:'400g',n:'Passierte Tomaten'},{a:'150g',n:'Spinat (TK oder frisch)'},{a:'Knoblauch, Ingwer',n:'Curry, Kreuzkümmel, Salz'}],
+     prep:'Hähnchen in Würfel, scharf anbraten. Knoblauch & Ingwer kurz mitrösten. Gewürze 1 Min anrösten. Rote Linsen, passierte Tomaten & Kokosmilch dazu. 20 Min köcheln bis Linsen weich. Spinat am Ende einrühren.',
+     tip:'✅ Große Portion kochen – 5 Tage haltbar. Wird jeden Tag besser.'},
+    {id:'d2',name:'Lachs + Ofengemüse + Süßkartoffel',emoji:'🐠',prepTime:'30 Min',macros:{kcal:890,p:72,c:76,f:38},
+     ingredients:[{a:'280g',n:'Lachsfilet'},{a:'300g',n:'Süßkartoffel (Würfel)'},{a:'300g',n:'Brokkoli + Paprika'},{a:'15ml',n:'Olivenöl'},{a:'½ Stk.',n:'Zitrone'},{a:'Salz, Pfeffer',n:'Rosmarin, Thymian'}],
+     prep:'Süßkartoffel & Gemüse mit Öl & Kräutern auf Backblech bei 200°C 25 Min rösten. Lachs in letzten 15 Min dazu (mit Zitrone & Salz). Alles zusammen auf dem Blech.',
+     tip:'✅ One-Pan. Gemüse vorrösten & einfrieren möglich.'},
+    {id:'d3',name:'Hack Paprika Pfanne + Reis',emoji:'🥘',prepTime:'20 Min',macros:{kcal:870,p:76,c:78,f:28},
+     ingredients:[{a:'280g',n:'Rinderhack (10% Fett)'},{a:'100g roh',n:'Basmatireis'},{a:'400g',n:'Paprika (bunt)'},{a:'1 Stk.',n:'Zwiebel'},{a:'400g',n:'Passierte Tomaten'},{a:'Salz, Pfeffer',n:'Paprika, Cumin, Knoblauch'}],
+     prep:'Hack mit Zwiebel anbraten. Paprika in Streifen dazu, 4 Min. Passierte Tomaten & Gewürze, 10 Min köcheln. Reis parallel kochen.',
+     tip:'✅ 3 Tage haltbar. Gute Low-Carb Alternative: Reis weglassen.'},
+    {id:'d4',name:'Hähnchen + Brokkoli + Reis',emoji:'🍗',prepTime:'20 Min',macros:{kcal:840,p:78,c:78,f:18},
+     ingredients:[{a:'250g',n:'Hähnchenbrustfilet'},{a:'100g roh',n:'Basmatireis'},{a:'350g',n:'Brokkoli'},{a:'10ml',n:'Olivenöl'},{a:'2 Zehen',n:'Knoblauch'},{a:'Salz, Pfeffer',n:'Paprika'}],
+     prep:'Hähnchen in Würfel braten. Brokkoli blanchieren. Knoblauch kurz in Öl anschwitzen. Alles mischen. Reis kochen.',
+     tip:'✅ Schnellstes Abendessen im Plan. 3 Tage haltbar.'},
+    {id:'d5',name:'Lachs + Grüne Bohnen + Kartoffel',emoji:'🥔',prepTime:'25 Min',macros:{kcal:880,p:70,c:74,f:36},
+     ingredients:[{a:'280g',n:'Lachsfilet'},{a:'300g',n:'Kartoffeln (festkochend)'},{a:'300g',n:'Grüne Bohnen'},{a:'10ml',n:'Olivenöl'},{a:'½ Stk.',n:'Zitrone'},{a:'Salz, Pfeffer',n:'Dill'}],
+     prep:'Kartoffeln in Würfel kochen (15 Min). Bohnen in Salzwasser 5 Min blanchieren. Lachs in Pfanne 4 Min/Seite. Mit Zitrone & Dill servieren.',
+     tip:'✅ Kartoffeln & Bohnen vorkochen. Lachs täglich frisch.'},
+    {id:'d6',name:'Pute + Spinat + Reis',emoji:'🍃',prepTime:'20 Min',macros:{kcal:840,p:80,c:78,f:18},
+     ingredients:[{a:'280g',n:'Putenbrust'},{a:'100g roh',n:'Basmatireis'},{a:'300g',n:'Spinat (frisch oder TK)'},{a:'2 Zehen',n:'Knoblauch'},{a:'10ml',n:'Olivenöl'},{a:'Salz, Pfeffer',n:'Muskat'}],
+     prep:'Pute in Scheiben braten. Knoblauch in Öl anschwitzen, Spinat dazu & zusammenfallen lassen, Muskat drüber. Reis kochen.',
+     tip:'✅ Leanste Abendoption. 3 Tage haltbar.'},
+    {id:'d7',name:'Hähnchen Kichererbsen Curry',emoji:'🫘',prepTime:'25 Min',macros:{kcal:880,p:76,c:82,f:26},
+     ingredients:[{a:'250g',n:'Hähnchenbrustfilet'},{a:'240g',n:'Kichererbsen (Dose, abgetropft)'},{a:'400g',n:'Passierte Tomaten'},{a:'150g',n:'Spinat'},{a:'Knoblauch, Ingwer',n:'Curry, Kurkuma, Salz'}],
+     prep:'Hähnchen würfeln & anbraten. Kichererbsen dazu, kurz anrösten. Gewürze & passierte Tomaten rein. 15 Min köcheln. Spinat am Ende.',
+     tip:'✅ 5 Tage haltbar. Kokosmilch-freie Curry-Alternative.'},
+    {id:'d8',name:'Lachs + Zucchini + Kartoffel',emoji:'🐟',prepTime:'25 Min',macros:{kcal:870,p:70,c:70,f:36},
+     ingredients:[{a:'280g',n:'Lachsfilet'},{a:'300g',n:'Kartoffeln'},{a:'300g',n:'Zucchini (Scheiben)'},{a:'10ml',n:'Olivenöl'},{a:'2 Zehen',n:'Knoblauch'},{a:'Salz, Pfeffer',n:'Kräuter der Provence'}],
+     prep:'Kartoffeln würfeln & kochen. Zucchini mit Knoblauch & Kräutern in Pfanne anbraten. Lachs separat braten. Alles anrichten.',
+     tip:'✅ Gemüse & Kartoffeln vorkochen. Lachs frisch.'},
+    // ── KALTE ABENDMAHLZEITEN ──
+    {id:'d9',name:'Hüttenkäse Bowl',emoji:'🧀',prepTime:'5 Min',macros:{kcal:820,p:75,c:58,f:22},
+     ingredients:[{a:'400g',n:'Hüttenkäse (mager)'},{a:'200g',n:'Thunfisch (Dose, in Wasser)'},{a:'1 Stk.',n:'Gurke (gewürfelt)'},{a:'150g',n:'Kirschtomaten'},{a:'3 Scheiben',n:'Vollkornbrot'},{a:'Salz, Pfeffer',n:'Schnittlauch'}],
+     prep:'Thunfisch abtropfen lassen. Hüttenkäse in Schüssel, Thunfisch unterrühren. Gurke & Tomaten dazu. Mit Salz, Pfeffer & Schnittlauch abschmecken. Mit Vollkornbrot servieren.',
+     tip:'❄️ KALT · 5 Min Aufwand. Perfekt nach müdem Trainingstag.'},
+    {id:'d10',name:'Thunfisch Salat',emoji:'🥗',prepTime:'5 Min',macros:{kcal:800,p:72,c:60,f:24},
+     ingredients:[{a:'280g',n:'Thunfisch (Dose, in Wasser)'},{a:'200g',n:'Gemischter Salat'},{a:'1 Stk.',n:'Gurke'},{a:'150g',n:'Kirschtomaten'},{a:'10ml',n:'Olivenöl'},{a:'3 Scheiben',n:'Vollkornbrot'},{a:'Salz, Pfeffer',n:'Apfelessig'}],
+     prep:'Thunfisch abtropfen. Salat, Gurke & Tomaten in Schüssel. Thunfisch drüber. Dressing: Olivenöl + Apfelessig + Salz + Pfeffer. Mit Vollkornbrot.',
+     tip:'❄️ KALT · Schnellste Mahlzeit im Plan. Zutaten immer im Haus halten.'},
+    {id:'d11',name:'Räucherlachs + Hüttenkäse',emoji:'🐟',prepTime:'5 Min',macros:{kcal:830,p:74,c:56,f:28},
+     ingredients:[{a:'200g',n:'Räucherlachs'},{a:'300g',n:'Hüttenkäse (mager)'},{a:'1 Stk.',n:'Gurke (Scheiben)'},{a:'3 Scheiben',n:'Vollkornbrot'},{a:'½ Stk.',n:'Zitrone'},{a:'Dill',n:'Salz, Pfeffer'}],
+     prep:'Hüttenkäse auf Brot streichen. Räucherlachs drauf. Gurkenscheiben dazu. Mit Zitronensaft & Dill abschmecken.',
+     tip:'❄️ KALT · Edleste kalte Option. Räucherlachs immer im Kühlschrank.'},
+    {id:'d12',name:'Putenbrust Wrap',emoji:'🌯',prepTime:'5 Min',macros:{kcal:810,p:76,c:64,f:20},
+     ingredients:[{a:'250g',n:'Putenbrust (aufgeschnitten)'},{a:'2 Stk.',n:'Vollkorn-Wraps'},{a:'200g',n:'Hüttenkäse'},{a:'100g',n:'Salat'},{a:'1 Stk.',n:'Tomate'},{a:'1 TL',n:'Senf'}],
+     prep:'Wrap mit Senf bestreichen. Hüttenkäse drauf. Salat, Tomatenscheiben, Putenbrust belegen. Fest einrollen. Fertig.',
+     tip:'❄️ KALT · Eingewickelt 1 Tag haltbar – auch als Meal Prep für unterwegs.'},
+    {id:'d13',name:'Quark Savory Bowl',emoji:'🫙',prepTime:'5 Min',macros:{kcal:790,p:73,c:52,f:22},
+     ingredients:[{a:'400g',n:'Magerquark 0,2%'},{a:'200g',n:'Thunfisch (Dose)'},{a:'150g',n:'Kirschtomaten'},{a:'½ Stk.',n:'Rote Zwiebel (fein)'},{a:'10ml',n:'Olivenöl'},{a:'2 Scheiben',n:'Vollkornbrot'},{a:'Salz, Pfeffer',n:'Paprikapulver'}],
+     prep:'Quark in Schüssel. Thunfisch (abgetropft) einrühren. Tomaten & Zwiebeln dazu. Olivenöl drüber, mit Paprika & Pfeffer abschmecken. Mit Brot servieren.',
+     tip:'❄️ KALT · Ungewöhnlich aber sehr sättigend durch Quark. Probiere es aus.'},
+    {id:'d14',name:'Thunfisch + Reis kalt',emoji:'🍱',prepTime:'5 Min',macros:{kcal:850,p:78,c:82,f:18},
+     ingredients:[{a:'280g',n:'Thunfisch (Dose)'},{a:'200g gekocht',n:'Basmatireis (vom Vortag)'},{a:'1 Stk.',n:'Gurke'},{a:'150g',n:'Kirschtomaten'},{a:'10ml',n:'Olivenöl'},{a:'Salz, Pfeffer',n:'Zitronensaft'}],
+     prep:'Vorgekochten Reis (kalt) in Schüssel. Thunfisch drüber. Gurke & Tomaten dazu. Olivenöl & Zitronensaft als Dressing. Fertig.',
+     tip:'❄️ KALT · Perfekt wenn Mittags-Reis übrig bleibt. Carb-reichste kalte Option.'},
+  ]
+};
+
+// ══════════════════════════════════════════════════
+// DEFAULT PLAN – 3 Gerichte pro Tageszeit, rotierend
+// Rotation: A=0, B=1, C=2, A=3, B=4, C=5, A=6
+// ══════════════════════════════════════════════════
+const ROTATION = [0,1,2,0,1,2,0]; // index per day into week's meal triple
+
+const DEFAULT_PLAN = {
+  week1: {
+    breakfast: ['b1','b2','b3'],
+    lunch:     ['l1','l2','l3'],
+    dinner:    ['d1','d2','d3'],
+  },
+  week2: {
+    breakfast: ['b4','b5','b6'],
+    lunch:     ['l4','l5','l6'],
+    dinner:    ['d4','d5','d6'],
+  }
+};
+
+// ══════════════════════════════════════════════════
+// STATE
+// ══════════════════════════════════════════════════
+const DAYS   = ['Mo','Di','Mi','Do','Fr','Sa','So'];
+const DNAMES = ['Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag','Sonntag'];
+const MTYPES = ['breakfast','lunch','dinner'];
+const MLBLS  = ['Frühstück','Mittagessen','Abendessen'];
+const WCLS   = ['bk-wrap','ln-wrap','dn-wrap'];
+const MEMOJI = ['🌅','☀️','🌙'];
+
+let S = {
+  week: 1,
+  shopWeek: 1,
+  currentDay: 0,
+  openMeals: {},
+  shopChecked: {1:{},2:{}},
+  startDate: null,
+  kcalTarget: 2600,
+  plan: JSON.parse(JSON.stringify(DEFAULT_PLAN)),
+};
+let swapCtx = null;
+
+// ══════════════════════════════════════════════════
+// HELPERS
+// ══════════════════════════════════════════════════
+const getMeal = (cat,id) => DB[cat].find(m=>m.id===id);
+
+function getDayMeal(week, dayIdx, type) {
+  const triple = S.plan[`week${week}`][type];
+  const id = triple[ROTATION[dayIdx]];
+  return getMeal(type, id);
+}
+
+function getDayMacros(week, dayIdx) {
+  let kcal=0,p=0,c=0,f=0;
+  MTYPES.forEach(t=>{const m=getDayMeal(week,dayIdx,t);kcal+=m.macros.kcal;p+=m.macros.p;c+=m.macros.c;f+=m.macros.f;});
+  return {kcal,p,c,f};
+}
+
+function toast(msg) {
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2200);
+}
+
+// ── Tracker ──
+function calcTracker() {
+  if (!S.startDate) return null;
+  const start = new Date(S.startDate);
+  const now = new Date();
+  start.setHours(0,0,0,0); now.setHours(0,0,0,0);
+  const diffDays = Math.floor((now - start) / 86400000);
+  if (diffDays < 0) return null;
+  const programWeek = Math.floor(diffDays / 7) + 1;
+  const cycleDay    = diffDays % 14; // 0–13
+  const cycleWeek   = cycleDay < 7 ? 1 : 2;
+  const dayInCycle  = cycleDay % 7;  // 0–6
+  return { programWeek, cycleWeek, dayInCycle, diffDays, dayName: DNAMES[dayInCycle] };
+}
+
+function updateTracker() {
+  const t = calcTracker();
+  const wn = document.getElementById('trackerWeekNum');
+  const sub = document.getElementById('trackerSub');
+  const statusText = document.getElementById('trackerStatusText');
+  const banner = document.getElementById('todayBanner');
+
+  if (!t) {
+    wn.textContent = '—';
+    sub.textContent = 'Startdatum setzen →';
+    if (statusText) statusText.textContent = 'Kein Startdatum gesetzt';
+    banner.style.display = 'none';
+    return;
+  }
+
+  wn.textContent = t.programWeek;
+  sub.textContent = `Zyklus-Woche ${t.cycleWeek} · ${DAYS[t.dayInCycle]}`;
+  if (statusText) statusText.textContent = `Tag ${t.diffDays+1} · Zyklus-Woche ${t.cycleWeek} · ${t.dayName}`;
+
+  // Today banner
+  banner.style.display = 'flex';
+  document.getElementById('todayDayName').textContent = t.dayName;
+  document.getElementById('todayMeta').textContent = `Tag ${t.diffDays+1} deines Programms`;
+  document.getElementById('todayCycle').innerHTML = `Zyklus-Woche ${t.cycleWeek}<br><span style="font-size:8px;opacity:.6">Tag ${t.dayInCycle+1} von 7</span>`;
+
+  // Progress strip
+  renderProgressStrip(t.cycleWeek, t.dayInCycle);
+}
+
+function renderProgressStrip(cycleWeek, todayIdx) {
+  const strip = document.getElementById('progressStrip');
+  strip.innerHTML = '';
+  for (let i=0;i<7;i++) {
+    const d = document.createElement('div');
+    const isToday = (cycleWeek === S.week) && (i === todayIdx);
+    const isPast  = (cycleWeek > S.week) || (cycleWeek === S.week && i < todayIdx);
+    d.className = `prog-day${isToday?' today':isPast?' past':''}`;
+    d.innerHTML = `<span class="pd-num">${i+1}</span><span class="pd-day">${DAYS[i]}</span>`;
+    d.addEventListener('click',()=>openDay(i));
+    strip.appendChild(d);
+  }
+}
+
+// ══════════════════════════════════════════════════
+// VIEWS
+// ══════════════════════════════════════════════════
+function showView(name) {
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.getElementById(`view-${name}`).classList.add('active');
+  const ns=['plan','shopping','settings'];
+  document.querySelectorAll('.nav-tab').forEach((t,i)=>t.classList.toggle('active',ns[i]===name));
+  if(name==='plan'){renderWeekGrid();updateTracker();}
+  if(name==='shopping') renderShoppingList();
+}
+
+// ══════════════════════════════════════════════════
+// WEEK GRID
+// ══════════════════════════════════════════════════
+function setWeek(w) {
+  S.week=w;
+  document.getElementById('wb1').classList.toggle('active',w===1);
+  document.getElementById('wb2').classList.toggle('active',w===2);
+  const t = calcTracker();
+  if(t) renderProgressStrip(t.cycleWeek, t.dayInCycle);
+  renderWeekGrid();
+}
+
+function renderWeekGrid() {
+  const grid = document.getElementById('weekGrid');
+  grid.innerHTML = '';
+  const t = calcTracker();
+
+  for(let d=0;d<7;d++) {
+    const mac = getDayMacros(S.week, d);
+    const meals = MTYPES.map(type=>getDayMeal(S.week,d,type));
+    const tot = mac.p*4+mac.c*4+mac.f*9;
+    const pP=((mac.p*4)/tot*100).toFixed(1);
+    const cP=((mac.c*4)/tot*100).toFixed(1);
+    const fP=((mac.f*9)/tot*100).toFixed(1);
+    const isToday = t && (t.cycleWeek===S.week) && (t.dayInCycle===d);
+
+    const row = document.createElement('div');
+    row.className=`day-row${isToday?' is-today':''}`;
+    row.innerHTML=`
+      <div class="day-row-header">
+        <div class="day-label">
+          <div class="day-badge${isToday?' today-badge':''}">
+            <span class="db-num">${d+1}</span>
+            <span class="db-short">${DAYS[d]}</span>
+          </div>
+          <div class="day-name-wrap">
+            <div class="day-full-name">${DNAMES[d]}</div>
+            ${isToday?'<div class="today-tag">● HEUTE</div>':''}
+          </div>
+        </div>
+        <div class="day-kcal-wrap">
+          <div class="day-kcal-num">${mac.kcal}</div>
+          <div class="day-kcal-lbl">kcal</div>
+        </div>
+      </div>
+      <div class="day-chips">
+        ${meals.map(m=>`<div class="meal-chip"><span class="mc-icon">${m.emoji}</span><span class="mc-name">${m.name}</span></div>`).join('')}
+      </div>
+      <div class="day-bar">
+        <div class="db-p" style="width:${pP}%"></div>
+        <div class="db-c" style="width:${cP}%"></div>
+        <div class="db-f" style="width:${fP}%"></div>
+      </div>
+    `;
+    row.addEventListener('click',()=>openDay(d));
+    grid.appendChild(row);
+  }
+}
+
+// ══════════════════════════════════════════════════
+// DAY DETAIL
+// ══════════════════════════════════════════════════
+function openDay(d) {
+  S.currentDay=d; S.openMeals={};
+  renderDayDetail(); showView('day');
+}
+
+function renderDayDetail() {
+  const d=S.currentDay, w=S.week;
+  const mac=getDayMacros(w,d);
+  document.getElementById('detailTitle').textContent=DNAMES[d];
+  document.getElementById('detailMeta').textContent=`Woche ${w} · Tag ${d+1} · Rotation ${['A','B','C','A','B','C','A'][d]}`;
+
+  document.getElementById('macroRow').innerHTML=`
+    <div class="mac-card k"><div class="mac-val">${mac.kcal}</div><div class="mac-lbl">kcal</div></div>
+    <div class="mac-card p"><div class="mac-val">${mac.p}g</div><div class="mac-lbl">Protein</div></div>
+    <div class="mac-card c"><div class="mac-val">${mac.c}g</div><div class="mac-lbl">Carbs</div></div>
+    <div class="mac-card f"><div class="mac-val">${mac.f}g</div><div class="mac-lbl">Fett</div></div>
+  `;
+
+  const dm=document.getElementById('detailMeals'); dm.innerHTML='';
+  MTYPES.forEach((type,ti)=>{
+    const meal=getDayMeal(w,d,type);
+    const isOpen=S.openMeals[type]||false;
+    const card=document.createElement('div');
+    card.className='meal-card';
+    card.innerHTML=`
+      <div class="meal-card-header" onclick="toggleMeal('${type}')">
+        <div class="mch-left">
+          <div class="meal-emoji-wrap ${WCLS[ti]}">${meal.emoji}</div>
+          <div>
+            <div class="meal-type-lbl">${MLBLS[ti]}</div>
+            <div class="meal-name">${meal.name}</div>
+          </div>
+        </div>
+        <div class="mch-right">
+          <div>
+            <div class="meal-kcal-big">${meal.macros.kcal}</div>
+            <span class="meal-kcal-lbl">kcal</span>
+          </div>
+          <button class="swap-btn" onclick="openSwap(event,'${type}',${d},${w})" title="Tauschen">⇄</button>
+          <div class="chevron${isOpen?' open':''}">▼</div>
+        </div>
+      </div>
+      <div class="meal-body${isOpen?' open':''}" id="mb-${type}">
+        <div class="sec-lbl">Zutaten</div>
+        <div class="ing-list">${meal.ingredients.map(i=>`<div class="ing-row"><span class="ing-a">${i.a}</span><span class="ing-n">${i.n}</span></div>`).join('')}</div>
+        <div class="sec-lbl">Zubereitung</div>
+        <div class="prep-block">${meal.prep}</div>
+        <div class="prep-tip">${meal.tip}</div>
+        <div class="meal-macro-strip">
+          <div class="mms-item p"><div class="mms-val">${meal.macros.p}g</div><div class="mms-lbl">Protein</div></div>
+          <div class="mms-item c"><div class="mms-val">${meal.macros.c}g</div><div class="mms-lbl">Carbs</div></div>
+          <div class="mms-item f"><div class="mms-val">${meal.macros.f}g</div><div class="mms-lbl">Fett</div></div>
+        </div>
+      </div>
+    `;
+    dm.appendChild(card);
+  });
+}
+
+function toggleMeal(type) {
+  S.openMeals[type]=!S.openMeals[type];
+  document.getElementById(`mb-${type}`).classList.toggle('open',S.openMeals[type]);
+  const headers=document.querySelectorAll('.meal-card-header');
+  headers.forEach(h=>{
+    const body=h.nextElementSibling;
+    if(body&&body.id===`mb-${type}`){
+      const chev=h.querySelector('.chevron');
+      if(chev) chev.classList.toggle('open',S.openMeals[type]);
+    }
+  });
+}
+
+// ══════════════════════════════════════════════════
+// SWAP – now swaps one of the 3 triple slots
+// ══════════════════════════════════════════════════
+function openSwap(e, type, dayIdx, week) {
+  e.stopPropagation();
+  const rotSlot = ROTATION[dayIdx]; // 0, 1, or 2
+  swapCtx = {type, dayIdx, week, rotSlot};
+  const currentId = S.plan[`week${week}`][type][rotSlot];
+  const lbMap={breakfast:'Frühstück',lunch:'Mittagessen',dinner:'Abendessen'};
+  document.getElementById('modalSub').textContent=`${lbMap[type]} · Rotation ${['A','B','C'][rotSlot]} · Woche ${week}`;
+
+  const list=document.getElementById('modalList'); list.innerHTML='';
+  DB[type].forEach(meal=>{
+    const isCur=meal.id===currentId;
+    const item=document.createElement('div');
+    item.className=`swap-item${isCur?' current':''}`;
+    item.innerHTML=`
+      <div class="si-icon">${meal.emoji}</div>
+      <div class="si-info">
+        <div class="si-name">${meal.name}${isCur?'<span class="active-tag">AKTIV</span>':''}</div>
+        <div class="si-prep">⏱ ${meal.prepTime}</div>
+        <div class="si-macros">P ${meal.macros.p}g · C ${meal.macros.c}g · F ${meal.macros.f}g</div>
+      </div>
+      <div class="si-kcal">
+        <div class="si-kcal-num">${meal.macros.kcal}</div>
+        <span class="si-kcal-lbl">kcal</span>
+      </div>
+    `;
+    if(!isCur) item.addEventListener('click',()=>swapMeal(meal.id));
+    list.appendChild(item);
+  });
+  document.getElementById('swapModal').classList.add('open');
+}
+
+function swapMeal(newId) {
+  const{type,week,rotSlot}=swapCtx;
+  S.plan[`week${week}`][type][rotSlot]=newId;
+  closeModal();
+  renderDayDetail();
+  renderWeekGrid();
+  toast('Gericht getauscht ✓');
+}
+
+function closeModal(e) {
+  if(!e||e.target===document.getElementById('swapModal'))
+    document.getElementById('swapModal').classList.remove('open');
+}
+
+// ══════════════════════════════════════════════════
+// SHOPPING LIST
+// ══════════════════════════════════════════════════
+function setShopWeek(w) {
+  S.shopWeek=w;
+  document.getElementById('swb1').classList.toggle('active',w===1);
+  document.getElementById('swb2').classList.toggle('active',w===2);
+  renderShoppingList();
+}
+
+function renderShoppingList() {
+  const w=S.shopWeek;
+  const map={};
+  // Collect all unique meals used in the week (3 per type × 3 types = 9 unique meals)
+  MTYPES.forEach(type=>{
+    const triple=S.plan[`week${w}`][type];
+    [...new Set(triple)].forEach(id=>{
+      const meal=getMeal(type,id);
+      meal.ingredients.forEach(ing=>{
+        const k=ing.n.toLowerCase().trim();
+        if(!map[k]){map[k]={name:ing.n,amounts:[],count:0};}
+        // Count how many days this meal appears
+        const dayCount=ROTATION.filter(r=>triple[r]===id).length;
+        map[k].amounts.push(ing.a);
+        map[k].count+=dayCount;
+      });
+    });
+  });
+
+  const cats={
+    '🥩 Protein':[],
+    '🥦 Gemüse':[],
+    '🌾 Getreide & Kohlenhydrate':[],
+    '🥛 Milchprodukte':[],
+    '🫙 Gewürze & Öle':[],
+    '🛒 Sonstiges':[],
+  };
+  const pw=['hähnchen','lachs','hack','rind','pute','fisch','kabeljau','garnelen','lachs','protein'];
+  const gw=['brokkoli','spinat','paprika','zucchini','tomate','gurke','karotte','bohne','zwiebel','knoblauch','kichererbsen','linsen','süßkartoffel','kartoffel'];
+  const kw=['haferflocken','reis','nudel','pasta','basmatireis','haferkleie','brot'];
+  const mw=['kokosmilch','proteinsahne','sahne'];
+  const ow=['olivenöl','öl','salz','pfeffer','curry','kurkuma','paprikapulver','kreuzkümmel','oregano','thymian','rosmarin','kräuter','ingwer','zimt','kakao','honig','chiasamen','leinsamen','muskat','dill','cumin'];
+
+  Object.values(map).forEach(item=>{
+    const lc=item.name.toLowerCase();
+    if(pw.some(x=>lc.includes(x))) cats['🥩 Protein'].push(item);
+    else if(gw.some(x=>lc.includes(x))) cats['🥦 Gemüse'].push(item);
+    else if(kw.some(x=>lc.includes(x))) cats['🌾 Getreide & Kohlenhydrate'].push(item);
+    else if(mw.some(x=>lc.includes(x))) cats['🥛 Milchprodukte'].push(item);
+    else if(ow.some(x=>lc.includes(x))) cats['🫙 Gewürze & Öle'].push(item);
+    else cats['🛒 Sonstiges'].push(item);
+  });
+
+  const list=document.getElementById('shopList'); list.innerHTML='';
+  Object.entries(cats).forEach(([cat,items])=>{
+    if(!items.length) return;
+    items.sort((a,b)=>a.name.localeCompare(b.name));
+    const[icon,...np]=cat.split(' ');
+    const sec=document.createElement('div'); sec.className='shop-cat';
+    sec.innerHTML=`
+      <div class="shop-cat-hdr"><span class="shop-cat-icon">${icon}</span><span class="shop-cat-name">${np.join(' ')}</span></div>
+      <div class="shop-items">${items.map(item=>{
+        const checked=S.shopChecked[w][item.name]||false;
+        const ua=[...new Set(item.amounts)].slice(0,2).join(' / ');
+        return `<div class="shop-item${checked?' done':''}" onclick="toggleShop(${w},'${item.name.replace(/'/g,"\\'")}')">
+          <div class="shop-cb">${checked?'✓':''}</div>
+          <div class="shop-iname">${item.name}</div>
+          <span class="shop-amt">${ua}</span><span class="shop-cnt">${item.count}×</span>
+        </div>`;
+      }).join('')}</div>
+    `;
+    list.appendChild(sec);
+  });
+}
+
+function toggleShop(w,name){
+  S.shopChecked[w][name]=!S.shopChecked[w][name];
+  renderShoppingList();
+}
+
+// ══════════════════════════════════════════════════
+// SAVE / LOAD / RESET
+// ══════════════════════════════════════════════════
+function updateKcalTarget(val) {
+  val = parseInt(val);
+  S.kcalTarget = val;
+  const tdee = 3200;
+  const deficit = tdee - val;
+  const lossPerWeek = (deficit * 7 / 7700).toFixed(2);
+
+  document.getElementById('kcalDisplay').textContent = val.toLocaleString('de') + ' kcal';
+
+  // Macros: Protein fixed ~200g, fat ~25% of kcal, rest carbs
+  const prot = 200;
+  const fat  = Math.round(val * 0.25 / 9);
+  const carb = Math.round((val - prot*4 - fat*9) / 4);
+
+  document.getElementById('mtrv-prot').textContent = `~${prot}g`;
+  document.getElementById('mtrv-carb').textContent = `~${Math.max(0,carb)}g`;
+  document.getElementById('mtrv-fat').textContent  = `~${fat}g`;
+
+  // Bar widths (relative to 3500 max)
+  document.getElementById('mtr-prot').style.width = (prot/300*100)+'%';
+  document.getElementById('mtr-carb').style.width = (Math.max(0,carb)/350*100)+'%';
+  document.getElementById('mtr-fat').style.width  = (fat/100*100)+'%';
+
+  // Hint
+  let hint = '';
+  if (deficit <= 0)       hint = '⚠️ Kein Defizit – Gewicht hält sich';
+  else if (deficit < 300) hint = `~${lossPerWeek} kg Verlust/Woche – sehr konservativ`;
+  else if (deficit < 600) hint = `~${lossPerWeek} kg Verlust/Woche – gutes Tempo`;
+  else if (deficit < 900) hint = `~${lossPerWeek} kg Verlust/Woche – solider Cut`;
+  else                    hint = `~${lossPerWeek} kg Verlust/Woche – aggressiv, Protein hoch halten!`;
+  document.getElementById('kcalHint').textContent = hint;
+
+  // Update slider background fill
+  const pct = (val-1800)/(3500-1800)*100;
+  document.getElementById('kcalSlider').style.background =
+    `linear-gradient(to right, var(--acc) ${pct}%, var(--border) ${pct}%)`;
+}
+
+
+function savePlan(){
+  const data = {
+    plan: S.plan,
+    shopChecked: S.shopChecked,
+    startDate: S.startDate||'',
+    kcalTarget: S.kcalTarget,
+    savedAt: new Date().toISOString(),
+  };
+  const blob = new Blob([JSON.stringify(data, null, 2)], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'cleaneat-plan.json';
+  a.click();
+  URL.revokeObjectURL(url);
+  toast('Plan als JSON gespeichert ✓');
+}
+
+function loadPlan(){
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = '.json';
+  input.onchange = e => {
+    const file = e.target.files[0];
+    if(!file) return;
+    const reader = new FileReader();
+    reader.onload = ev => {
+      try{
+        const data = JSON.parse(ev.target.result);
+        if(data.plan) S.plan = data.plan;
+        if(data.shopChecked) S.shopChecked = data.shopChecked;
+        if(data.startDate) { S.startDate = data.startDate; document.getElementById('startDateInput').value = data.startDate; }
+        if(data.kcalTarget) { S.kcalTarget = data.kcalTarget; document.getElementById('kcalSlider').value = data.kcalTarget; updateKcalTarget(data.kcalTarget); }
+        renderWeekGrid(); updateTracker();
+        toast('Plan geladen ✓');
+      }catch(e){ toast('Fehler beim Laden – ungültige Datei'); }
+    };
+    reader.readAsText(file);
+  };
+  input.click();
+}
+function resetPlan(){
+  if(confirm('Alles zurücksetzen? Plan, Einkaufsliste, Startdatum und Kalorienziel werden gelöscht.')){
+    S.plan = JSON.parse(JSON.stringify(DEFAULT_PLAN));
+    S.shopChecked = {1:{},2:{}};
+    S.startDate = null;
+    S.kcalTarget = 2600;
+    localStorage.clear();
+    document.getElementById('kcalSlider').value = 2600;
+    document.getElementById('startDateInput').value = '';
+    updateKcalTarget(2600);
+    updateTracker();
+    renderWeekGrid();
+    toast('Alles zurückgesetzt ✓');
+  }
+}
+function saveStartDate(){
+  S.startDate=document.getElementById('startDateInput').value||null;
+  updateTracker();
+  savePlan();
+}
+
+// ══════════════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════════════
+window.addEventListener('load',()=>{
+  updateKcalTarget(S.kcalTarget);
+  renderWeekGrid();
+  updateTracker();
+});
+</script>
+</body>
+</html>
