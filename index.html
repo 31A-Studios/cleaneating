@@ -257,10 +257,9 @@ input[type=range]::-moz-range-thumb{width:26px;height:26px;border-radius:50%;bac
       <div class="eyebrow">Recomp Protocol</div>
       <div class="app-title">Clean <span>Eating</span></div>
     </div>
-    <div class="tracker-card" id="trackerCard"><div style="position:absolute;top:-1px;left:-1px;right:-1px;background:var(--border);border-radius:var(--r) var(--r) 0 0;padding:3px 8px;font-family:var(--font-mono);font-size:9px;color:var(--muted);letter-spacing:1px;text-align:center" id="versionBadge">v1.4</div>
+    <div class="tracker-card" id="trackerCard"><div style="position:absolute;top:-1px;left:-1px;right:-1px;background:var(--border);border-radius:var(--r) var(--r) 0 0;padding:3px 8px;font-family:var(--font-mono);font-size:9px;color:var(--muted);letter-spacing:1px;text-align:center" id="versionBadge">v1.6</div>
       <div class="tracker-week-num" id="trackerWeekNum">—</div>
       <div class="tracker-label">Programm-Woche</div>
-      <div class="tracker-sub" id="trackerSub">Startdatum setzen →</div>
     </div>
   </div>
   <div class="header-pills">
@@ -352,10 +351,7 @@ input[type=range]::-moz-range-thumb{width:26px;height:26px;border-radius:50%;bac
         <div class="s-label">Startdatum<small>Wann hast du begonnen?</small></div>
         <input type="date" class="date-input" id="startDateInput"><button class="s-btn primary" onclick="saveStartDate()" style="margin-top:8px;width:100%">Datum setzen</button>
       </div>
-      <div class="s-row">
-        <div class="s-icon">📊</div>
-        <div class="s-label">Status<small id="trackerStatusText">Kein Startdatum gesetzt</small></div>
-      </div>
+
     </div>
 
     <div class="s-section-lbl">Plan speichern & laden</div>
@@ -413,7 +409,7 @@ input[type=range]::-moz-range-thumb{width:26px;height:26px;border-radius:50%;bac
 
 <script>
 // ══════════════════════════════════════════════════
-const VERSION = "v1.4";
+const VERSION = "v1.6";
 // ══════════════════════════════════════════════════
 // MEAL DATABASE
 // ══════════════════════════════════════════════════
@@ -622,21 +618,17 @@ function calcTracker() {
 function updateTracker() {
   const t = calcTracker();
   const wn = document.getElementById('trackerWeekNum');
-  const sub = document.getElementById('trackerSub');
-  const statusText = document.getElementById('trackerStatusText');
   const banner = document.getElementById('todayBanner');
 
   if (!t) {
     wn.textContent = '—';
-    sub.textContent = 'Startdatum setzen →';
-    if (statusText) statusText.textContent = 'Kein Startdatum gesetzt';
     banner.style.display = 'none';
     return;
   }
 
   wn.textContent = t.programWeek;
-  sub.textContent = `Zyklus-Woche ${t.cycleWeek} · ${DAYS[t.dayInCycle]}`;
-  if (statusText) statusText.textContent = `Tag ${t.diffDays+1} · Zyklus-Woche ${t.cycleWeek} · ${t.dayName}`;
+  const dateStr = new Date(S.startDate).toLocaleDateString('de-DE',{day:'2-digit',month:'2-digit',year:'numeric'});
+
 
   // Today banner
   banner.style.display = 'flex';
